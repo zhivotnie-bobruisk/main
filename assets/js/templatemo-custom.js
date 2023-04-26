@@ -1,6 +1,53 @@
 (function ($) {
 	
 	"use strict";
+  
+  const modal = document.querySelector(".modal");
+  const overlay = document.querySelector(".overlay");
+  const openModalBtn = document.querySelector(".btn-open");
+  const closeModalBtn = document.querySelector(".btn-close");
+  const animalIdInput = document.getElementById("animal-id-input");
+  const animalModalImage = document.getElementById("animal-image");
+  const animalModalCaption = document.getElementById("animal-modal-caption");
+  const animalModalHeading = document.getElementById("animal-modal-heading");
+
+  const openModal = function () {
+    const id = animalIdInput.value;
+    const url = "./assets/images/" + id + ".png";
+    const textUrl = './assets/images/' + id + '.txt';
+    
+    const newImg = new Image();
+    newImg.onload = function() {
+      animalModalImage.src = this.src;
+      animalModalImage.style.display = 'block';
+      animalModalHeading.innerText = "Найдено!";
+      animalModalCaption.innerText = "";
+
+      readTextFile('./assets/images/' + id + '.txt');
+    }
+    newImg.onerror = imgError;
+    newImg.src = url;
+
+    modal.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+  };
+
+  const imgError = function () {
+    animalModalHeading.innerText = "Ничего не найдено :(";
+    animalModalCaption.innerText = "К сожалению, в реестре отсутствуют записи о животных с этим номером";
+    animalModalImage.style.display = 'none';
+    animalModalImage.src = null;
+  }
+
+  const closeModal = function () {
+    modal.classList.add("hidden");
+    overlay.classList.add("hidden");
+  };
+
+  openModalBtn.addEventListener("click", openModal);
+  closeModalBtn.addEventListener("click", closeModal);
+  overlay.addEventListener("click", closeModal);
+
 
 	// Header Type = Fixed
   $(window).scroll(function() {
